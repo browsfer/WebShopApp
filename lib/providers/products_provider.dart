@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'product.dart';
 
@@ -48,9 +50,28 @@ class ProductsProvider with ChangeNotifier {
     return _products.where((prodItem) => prodItem.isFavorite).toList();
   }
 
-  void addProduct(Product newProduct) {
-    _products.insert(0, newProduct);
-    notifyListeners();
+  Future<void> addProduct(Product product) {
+    final url = Uri.parse(
+        'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider.json');
+    return http
+        .post(url,
+            body: json.encode({
+              'title': product.title,
+              'price': product.price,
+              'description': product.description,
+              'imageUrl': product.imageUrl,
+              'isFavorite': product.isFavorite,
+            }))
+        .then((value) {
+      final newProduct = Product(
+          id: json.decode(value.body)['name'],
+          title: product.title,
+          description: product.description,
+          imageUrl: product.imageUrl,
+          price: product.price);
+      _products.add(newProduct);
+      notifyListeners();
+    });
   }
 
   Product findById(String? id) {
