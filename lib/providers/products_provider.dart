@@ -50,28 +50,29 @@ class ProductsProvider with ChangeNotifier {
     return _products.where((prodItem) => prodItem.isFavorite).toList();
   }
 
-  Future<void> addProduct(Product product) {
+  Future<void> addProduct(Product product) async {
     final url = Uri.parse(
-        'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider.json');
-    return http
-        .post(url,
-            body: json.encode({
-              'title': product.title,
-              'price': product.price,
-              'description': product.description,
-              'imageUrl': product.imageUrl,
-              'isFavorite': product.isFavorite,
-            }))
-        .then((value) {
+        'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider');
+    try {
+      final response = await http.post(url,
+          body: json.encode({
+            'title': product.title,
+            'price': product.price,
+            'description': product.description,
+            'imageUrl': product.imageUrl,
+            'isFavorite': product.isFavorite,
+          }));
       final newProduct = Product(
-          id: json.decode(value.body)['name'],
+          id: json.decode(response.body)['name'],
           title: product.title,
           description: product.description,
           imageUrl: product.imageUrl,
           price: product.price);
       _products.add(newProduct);
       notifyListeners();
-    });
+    } catch (error) {
+      throw error;
+    }
   }
 
   Product findById(String? id) {
