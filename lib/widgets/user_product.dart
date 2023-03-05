@@ -52,21 +52,21 @@ class UserProduct extends StatelessWidget {
                   onPressed: () {
                     Provider.of<ProductsProvider>(context, listen: false)
                         .deleteProduct(id, removeProduct);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        duration: const Duration(seconds: 6),
-                        content: const Text('You just removed a product.'),
-                        // backgroundColor: Colors.black,
-                        action: SnackBarAction(
-                          onPressed: () {
-                            Provider.of<ProductsProvider>(context,
-                                    listen: false)
-                                .undoDelete(id, removeProduct);
-                          },
-                          label: 'UNDO',
-                        ),
-                      ),
-                    );
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   SnackBar(
+                    //     duration: const Duration(seconds: 6),
+                    //     content: const Text('You just removed a product.'),
+                    //     // backgroundColor: Colors.black,
+                    //     action: SnackBarAction(
+                    //       onPressed: () {
+                    //         Provider.of<ProductsProvider>(context,
+                    //                 listen: false)
+                    //             .undoDelete(id, removeProduct);
+                    //       },
+                    //       label: 'UNDO',
+                    //     ),
+                    //   ),
+                    // );
                   }),
             ],
           ),
