@@ -14,7 +14,7 @@ class ProductDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(loadedProduct.title),
+        title: Text(loadedProduct!.title),
       ),
       body: SingleChildScrollView(
         child: Column(children: [
@@ -24,10 +24,19 @@ class ProductDetailScreen extends StatelessWidget {
             child: Image.network(loadedProduct.imageUrl),
           ),
           const SizedBox(height: 10),
-          Text(
-            '\$${loadedProduct.price}',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              shape: BoxShape.rectangle,
+              border: Border.all(
+                  width: 1, color: Theme.of(context).colorScheme.primary),
+            ),
+            child: Text(
+              '\$${loadedProduct.price}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 20),
+            ),
           ),
           const SizedBox(height: 10),
           Text(loadedProduct.description)

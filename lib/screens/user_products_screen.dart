@@ -38,10 +38,9 @@ class UserProductsScreen extends StatelessWidget {
           child: ListView.builder(
             itemCount: productsData.products.length,
             itemBuilder: (ctx, i) => UserProduct(
-              id: productsData.products[i].id,
-              title: productsData.products[i].title,
-              imageUrl: productsData.products[i].imageUrl,
-              removeProduct: productsData.products[i],
+              id: productsData.products[i]!.id,
+              title: productsData.products[i]!.title,
+              imageUrl: productsData.products[i]!.imageUrl,
             ),
           ),
         ),

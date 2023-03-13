@@ -13,16 +13,16 @@ class UserProduct extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String? id;
-  final Product removeProduct;
 
-  UserProduct(
-      {required this.id,
-      required this.title,
-      required this.imageUrl,
-      required this.removeProduct});
+  UserProduct({
+    required this.id,
+    required this.title,
+    required this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     return Card(
       elevation: 2,
       margin: const EdgeInsets.all(10),
@@ -32,45 +32,45 @@ class UserProduct extends StatelessWidget {
         leading: CircleAvatar(
           backgroundImage: NetworkImage(imageUrl),
         ),
-        trailing: Container(
-          width: 100,
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.edit,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(EditProductScreen.routeName, arguments: id),
-              ),
-              IconButton(
+        trailing: Builder(builder: (context) {
+          return Container(
+            width: 100,
+            child: Row(
+              children: <Widget>[
+                IconButton(
                   icon: Icon(
-                    Icons.delete,
-                    color: Theme.of(context).errorColor,
+                    Icons.edit,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                  onPressed: () {
-                    Provider.of<ProductsProvider>(context, listen: false)
-                        .deleteProduct(id, removeProduct);
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   SnackBar(
-                    //     duration: const Duration(seconds: 6),
-                    //     content: const Text('You just removed a product.'),
-                    //     // backgroundColor: Colors.black,
-                    //     action: SnackBarAction(
-                    //       onPressed: () {
-                    //         Provider.of<ProductsProvider>(context,
-                    //                 listen: false)
-                    //             .undoDelete(id, removeProduct);
-                    //       },
-                    //       label: 'UNDO',
-                    //     ),
-                    //   ),
-                    // );
-                  }),
-            ],
-          ),
-        ),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(EditProductScreen.routeName, arguments: id),
+                ),
+                IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: Theme.of(context).errorColor,
+                    ),
+                    onPressed: () async {
+                      try {
+                        await Provider.of<ProductsProvider>(context,
+                                listen: false)
+                            .deleteProduct(id);
+                      } catch (error) {
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              error.toString(),
+                              textAlign: TextAlign.center,
+                            ),
+                            duration: const Duration(seconds: 5),
+                          ),
+                        );
+                      }
+                    }),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

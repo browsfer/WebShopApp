@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
 import 'dart:convert';
 import 'dart:developer';
 
+import '../models/http_exception.dart';
 import 'product.dart';
 
 class ProductsProvider with ChangeNotifier {
-  List<Product> _products = [
+  List<Product?> _products = [
     //   Product(
     //     id: 'p1',
     //     title: 'Red Shirt',
@@ -41,23 +43,23 @@ class ProductsProvider with ChangeNotifier {
     //   ),
   ];
 
-  List<Product> removedProducts = [];
-
-  List<Product> get products {
+  List<Product?> get products {
     return [..._products];
   }
 
-  List<Product> get onlyFavorite {
-    return _products.where((prodItem) => prodItem.isFavorite).toList();
+  List<Product?> get onlyFavorite {
+    return _products.where((prodItem) => prodItem!.isFavorite).toList();
   }
 
   Future<void> fetchAndAddproducts() async {
-    final url = Uri.parse(
-        'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider.json');
     try {
-      final response = await http.get(url);
+      final response = await http.get(Uri.parse(
+          'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider.json'));
 
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData.isEmpty) {
+        return;
+      }
       final List<Product> loadedProducts = [];
       extractedData.forEach(
         (prodId, prodValue) {
@@ -81,10 +83,10 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    final url = Uri.parse(
-        'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider.json');
     try {
-      final response = await http.post(url,
+      final response = await http.post(
+          Uri.parse(
+              'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider.json'),
           body: json.encode({
             'title': product.title,
             'price': product.price,
@@ -105,32 +107,45 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
-  Product findById(String? id) {
-    return _products.firstWhere((prod) => prod.id == id);
+  Product? findById(String? id) {
+    return _products.firstWhere((prod) => prod!.id == id);
   }
 
-  void updateProduct(String? id, Product updatedProduct) {
-    final productIndex = _products.indexWhere((element) => element.id == id);
+  Future<void> updateProduct(String? id, Product updatedProduct) async {
+    await http.patch(
+      Uri.parse(
+          'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider.json'),
+      body: json.encode(
+        {
+          'title': updatedProduct.title,
+          'price': updatedProduct.price,
+          'description': updatedProduct.description,
+          'imageUrl': updatedProduct.imageUrl,
+        },
+      ),
+    );
+    final productIndex = _products.indexWhere((element) => element?.id == id);
     _products[productIndex] = updatedProduct;
     notifyListeners();
   }
 
-  void deleteProduct(String? id, Product removeProduct) {
-    final productIndex = _products.indexWhere((element) => element.id == id);
-    _products.removeAt(productIndex);
+  Future<void> deleteProduct(String? id) async {
+    final existingProductIndex =
+        _products.indexWhere((element) => element?.id == id);
+    var existingProduct = _products[existingProductIndex];
 
-    // _products.removeWhere(
-    //   (element) => element.id == id,
-    // );
-    // removedProducts.insert(0, removeProduct);
-
+    _products.removeAt(existingProductIndex);
     notifyListeners();
+
+    final result = await http.delete(
+      Uri.parse(
+          'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/productsprovider.json'),
+    );
+    if (result.statusCode >= 400) {
+      _products.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw HttpException('Deleting product failed');
+    }
+    existingProduct = null;
   }
 }
-
-//   void undoDelete(String? id, Product alreadyRemovedProduct) {
-//     removedProducts.removeWhere((element) => element.id == id);
-//     _products.insert(0, alreadyRemovedProduct);
-//     notifyListeners();
-//   }
-// }

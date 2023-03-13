@@ -7,11 +7,17 @@ import '../providers/orders.dart';
 
 import '../widgets/cart_item.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   static const routeName = '/cart';
 
   @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  @override
   Widget build(BuildContext context) {
+    var isLoading = false;
     final cart = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(
@@ -23,7 +29,7 @@ class CartScreen extends StatelessWidget {
             elevation: 7,
             margin: const EdgeInsets.all(10),
             child: Padding(
-              padding: EdgeInsets.all(15),
+              padding: const EdgeInsets.all(15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -46,29 +52,44 @@ class CartScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: () {
-                      Provider.of<Orders>(context, listen: false).addOrder(
-                          cart.items.values.toList(),
-                          cart.totalPrice,
-                          cart.items.values.first.title);
-                      cart.clearCart();
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 6),
-                          content: const Text('You have placed an order.'),
-                          // backgroundColor: Colors.black,
-                          action: SnackBarAction(
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(OrdersScreen.routeName);
-                            },
-                            label: 'Show me my order',
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text('PLACE ORDER'),
+                    onPressed: (cart.totalPrice <= 0 || isLoading)
+                        ? null
+                        : () async {
+                            setState(() {
+                              isLoading = true;
+                            });
+
+                            await Provider.of<Orders>(context, listen: false)
+                                .addOrder(
+                              cart.items.values.toList(),
+                              cart.totalPrice,
+                              cart.items.values.first.title,
+                            );
+                            setState(() {
+                              isLoading = false;
+                            });
+                            cart.clearCart();
+
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                duration: const Duration(seconds: 6),
+                                content:
+                                    const Text('You have placed an order.'),
+                                // backgroundColor: Colors.black,
+                                action: SnackBarAction(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pushNamed(OrdersScreen.routeName);
+                                  },
+                                  label: 'Show me my order',
+                                ),
+                              ),
+                            );
+                          },
+                    child: isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text('PLACE ORDER'),
                   ),
                 ],
               ),
@@ -80,7 +101,6 @@ class CartScreen extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               itemBuilder: (ctx, i) => CartItem(
-                cart.items.values.toList()[i].id,
                 cart.items.values.toList()[i].price,
                 cart.items.values.toList()[i].quantity,
                 cart.items.values.toList()[i].title,

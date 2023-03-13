@@ -48,12 +48,12 @@ class _OrderItemState extends State<OrderItem> {
                           Text(
                             prod.title,
                             style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             '${prod.quantity} x \$${prod.price.toStringAsFixed(2)}',
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                             ),
                           )
                         ],

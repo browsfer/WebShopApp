@@ -12,6 +12,8 @@ class EditProductScreen extends StatefulWidget {
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
@@ -46,7 +48,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
       final productId = ModalRoute.of(context)!.settings.arguments as String?;
       if (productId != null) {
         _editedProduct = Provider.of<ProductsProvider>(context, listen: false)
-            .findById(productId);
+                .findById(productId) ??
+            Product(
+              id: null,
+              title: '',
+              price: 0,
+              description: '',
+              imageUrl: '',
+            );
         _initValues = {
           'title': _editedProduct.title,
           'price': _editedProduct.price.toString(),
@@ -94,11 +103,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
 
     if (_editedProduct.id != null) {
-      Provider.of<ProductsProvider>(context, listen: false)
+      await Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
     } else {
       try {
         await Provider.of<ProductsProvider>(context, listen: false)
@@ -120,20 +126,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ],
               );
             });
-      } finally {
-        Navigator.of(context).pop();
-        setState(
-          () {
-            _isLoading = false;
-          },
-        );
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('Edit Product'),
         actions: <Widget>[
