@@ -21,13 +21,17 @@ class OrderItem {
 class Orders with ChangeNotifier {
   List<OrderItem> _orderedProducts = [];
 
+  final String? authToken;
+  final String? userId;
+  Orders(this.authToken, this.userId, this._orderedProducts);
+
   List<OrderItem> get orderedProducts {
     return [..._orderedProducts];
   }
 
   Future<void> fetchAndAddproducts() async {
     final response = await http.get(Uri.parse(
-        'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/orders.json'));
+        'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/orders/$userId.json?auth=$authToken'));
 
     List<OrderItem> loadedOrders = [];
 
@@ -67,7 +71,7 @@ class Orders with ChangeNotifier {
     try {
       final orderResponse = await http.post(
         Uri.parse(
-            'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/orders.json'),
+            'https://fluttercourse-4800b-default-rtdb.europe-west1.firebasedatabase.app/orders/$userId.json?auth=$authToken'),
         body: json.encode({
           'amount': total,
           'dateTime': timestamp.toIso8601String(),
