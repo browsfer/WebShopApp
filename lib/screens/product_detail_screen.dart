@@ -13,34 +13,76 @@ class ProductDetailScreen extends StatelessWidget {
         Provider.of<ProductsProvider>(context, listen: false).findById(routeId);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(loadedProduct!.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(children: [
-          Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Image.network(loadedProduct.imageUrl),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              shape: BoxShape.rectangle,
-              border: Border.all(
-                  width: 1, color: Theme.of(context).colorScheme.primary),
+      // appBar: AppBar(
+      // title: Text(loadedProduct!.title),
+      // ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            // leading: Container(
+            //   margin: EdgeInsets.only(top: 15, left: 15),
+            //   child: Image.network(
+            //       'https://assets.allegrostatic.com/seller-extras-7b/logotype_102853286_aa23b4fa-8b34-4c53-96fb-810cf436093c'),
+            // ),
+            iconTheme: const IconThemeData(color: Colors.black, size: 40),
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: Colors.black.withOpacity(0.6),
+                ),
+                child: Text(
+                  loadedProduct!.title,
+                ),
+              ),
+              background: Hero(
+                tag: loadedProduct.id!,
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  child: Image.network(
+                    loadedProduct.imageUrl,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ),
-            child: Text(
-              '\$${loadedProduct.price}',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 20),
-            ),
           ),
-          const SizedBox(height: 10),
-          Text(loadedProduct.description)
-        ]),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              const SizedBox(height: 10),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    shape: BoxShape.rectangle,
+                    border: Border.all(
+                        width: 1, color: Theme.of(context).primaryColor),
+                  ),
+                  child: Text(
+                    '\$${loadedProduct.price}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                margin: const EdgeInsets.all(10.0),
+                child: Text(
+                  loadedProduct.description,
+                  textAlign: TextAlign.start,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+            ]),
+          ),
+        ],
       ),
     );
   }

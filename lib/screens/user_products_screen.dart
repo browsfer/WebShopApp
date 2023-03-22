@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../screens/edit_product_screen.dart';
 
@@ -35,8 +36,10 @@ class UserProductsScreen extends StatelessWidget {
         future: _refreshProducts(context),
         builder: (context, snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
-                ? const Center(
-                    child: CircularProgressIndicator(),
+                ? Center(
+                    child: LoadingAnimationWidget.inkDrop(
+                        color: Theme.of(context).colorScheme.secondary,
+                        size: 40),
                   )
                 : RefreshIndicator(
                     onRefresh: () => _refreshProducts(context),

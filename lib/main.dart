@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:web_shop/screens/splash_screen.dart';
 
 import '/providers/products_provider.dart';
 import '/providers/cart.dart';
@@ -46,11 +47,31 @@ class MyApp extends StatelessWidget {
           builder: (ctx, auth, _) => MaterialApp(
             title: 'Web Shop',
             theme: ThemeData(
-                fontFamily: 'Lato',
-                colorScheme:
-                    ColorScheme.fromSwatch(primarySwatch: Colors.blueGrey)
-                        .copyWith(secondary: Colors.red.shade600)),
-            home: auth.isAuth ? ProductOverviewScreen() : AuthScreen(),
+              appBarTheme: const AppBarTheme(
+                color: Color.fromARGB(255, 8, 15, 51),
+              ),
+              primaryColor: const Color.fromARGB(
+                255,
+                8,
+                15,
+                51,
+              ),
+              fontFamily: 'Lato',
+              colorScheme:
+                  ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(
+                secondary: Color.fromARGB(255, 241, 99, 101),
+              ),
+            ),
+            home: auth.isAuth
+                ? ProductOverviewScreen()
+                : FutureBuilder(
+                    future: auth.tryAutoLogin(),
+                    builder: (ctx, authResultSnapshot) =>
+                        authResultSnapshot.connectionState ==
+                                ConnectionState.waiting
+                            ? SplashScreen()
+                            : AuthScreen(),
+                  ),
             routes: {
               ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
               CartScreen.routeName: (ctx) => CartScreen(),

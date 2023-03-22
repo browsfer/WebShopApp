@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../helpers/custom_route.dart';
+import '../providers/auth.dart';
 
 import '../screens/user_products_screen.dart';
 import '../screens/orders_screen.dart';
+import '../screens/product_overview_screen.dart';
 
 class DrawerApp extends StatelessWidget {
   const DrawerApp({super.key});
@@ -9,20 +14,14 @@ class DrawerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           DrawerHeader(
             padding: const EdgeInsets.all(25),
-            decoration:
-                BoxDecoration(color: Theme.of(context).colorScheme.primary),
-            child: const Text(
-              'My Web Shop',
-              style: TextStyle(
-                fontSize: 22,
-                color: Colors.white,
-              ),
-            ),
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            child: Image.network(
+                'https://assets.allegrostatic.com/seller-extras-c1/shop-cover_102853286_5ac3aa0b-101d-4c30-b3dd-f0cc271799f4'),
           ),
           ListTile(
             leading: const Icon(Icons.shop),
@@ -31,7 +30,8 @@ class DrawerApp extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/');
+              Navigator.of(context).pushReplacement(
+                  CustomRoute(builder: (ctx) => ProductOverviewScreen()));
             },
           ),
           const Divider(),
@@ -42,8 +42,8 @@ class DrawerApp extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             onTap: () {
-              Navigator.of(context)
-                  .pushReplacementNamed(OrdersScreen.routeName);
+              Navigator.of(context).pushReplacement(
+                  CustomRoute(builder: (ctx) => OrdersScreen()));
             },
           ),
           const Divider(),
@@ -59,6 +59,17 @@ class DrawerApp extends StatelessWidget {
             },
           ),
           const Divider(),
+          const Spacer(),
+          ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(
+                Theme.of(context).colorScheme.secondary,
+              )),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Provider.of<Auth>(context, listen: false).logout();
+              },
+              child: const Text('LOGOUT')),
         ],
       ),
     );

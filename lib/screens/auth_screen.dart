@@ -87,12 +87,13 @@ class AuthCard extends StatefulWidget {
   _AuthCardState createState() => _AuthCardState();
 }
 
-class _AuthCardState extends State<AuthCard> {
+class _AuthCardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   void _showErrorDialog(String errorMessage) {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text('An error occured.'),
+              title: const Text('An error occured.'),
               content: Text(errorMessage),
               actions: [
                 ElevatedButton(
@@ -110,6 +111,44 @@ class _AuthCardState extends State<AuthCard> {
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
+  AnimationController? _controller;
+  Animation<double>? _opacityAnimation;
+  Animation<Offset>? _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 200,
+      ),
+    );
+
+    _opacityAnimation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller!,
+        curve: Curves.easeIn,
+      ),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1.5),
+      end: const Offset(0, 0),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller!,
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller!.dispose();
+  }
 
   void _submit() async {
     FocusManager.instance.primaryFocus?.unfocus();
@@ -155,6 +194,7 @@ class _AuthCardState extends State<AuthCard> {
     } catch (error) {
       const errorMessage = 'Something went wrong. Try again later.';
       _showErrorDialog(errorMessage);
+      print(error);
     }
 
     setState(() {
@@ -166,10 +206,12 @@ class _AuthCardState extends State<AuthCard> {
     if (_authMode == AuthMode.Login) {
       setState(() {
         _authMode = AuthMode.Signup;
+        _controller!.forward();
       });
     } else {
       setState(() {
         _authMode = AuthMode.Login;
+        _controller!.reverse();
       });
     }
   }
@@ -182,10 +224,13 @@ class _AuthCardState extends State<AuthCard> {
         borderRadius: BorderRadius.circular(10.0),
       ),
       elevation: 8.0,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeIn,
         height: _authMode == AuthMode.Signup ? 320 : 260,
-        constraints:
-            BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
+        constraints: BoxConstraints(
+          minHeight: _authMode == AuthMode.Signup ? 320 : 260,
+        ),
         width: deviceSize.width * 0.75,
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -200,7 +245,6 @@ class _AuthCardState extends State<AuthCard> {
                     if (value!.isEmpty || !value.contains('@')) {
                       return 'Invalid email!';
                     }
-                    return null;
                     return null;
                   },
                   onSaved: (value) {
@@ -221,20 +265,32 @@ class _AuthCardState extends State<AuthCard> {
                   },
                   onEditingComplete: _submit,
                 ),
-                if (_authMode == AuthMode.Signup)
-                  TextFormField(
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration:
-                        const InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
-                          }
-                        : null,
+                AnimatedContainer(
+                  constraints: BoxConstraints(
+                    minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                    maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
                   ),
+                  duration: const Duration(milliseconds: 300),
+                  child: FadeTransition(
+                    opacity: _opacityAnimation!,
+                    child: SlideTransition(
+                      position: _slideAnimation!,
+                      child: TextFormField(
+                        enabled: _authMode == AuthMode.Signup,
+                        decoration: const InputDecoration(
+                            labelText: 'Confirm Password'),
+                        obscureText: true,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match!';
+                                }
+                              }
+                            : null,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -243,6 +299,8 @@ class _AuthCardState extends State<AuthCard> {
                 else
                   ElevatedButton(
                     style: ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(
+                          Theme.of(context).primaryColor),
                       padding: MaterialStateProperty.all(
                           const EdgeInsets.symmetric(
                               horizontal: 30.0, vertical: 8.0)),
@@ -256,8 +314,7 @@ class _AuthCardState extends State<AuthCard> {
                   onPressed: _switchAuthMode,
                   child: Text(
                     '${_authMode == AuthMode.Login ? 'SIGNUP' : 'LOGIN'} INSTEAD',
-                    style:
-                        TextStyle(color: Theme.of(context).colorScheme.primary),
+                    style: TextStyle(color: Theme.of(context).primaryColor),
                   ),
                 ),
               ],

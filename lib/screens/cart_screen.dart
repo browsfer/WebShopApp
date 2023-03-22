@@ -48,7 +48,7 @@ class _CartScreenState extends State<CartScreen> {
                       '\$${cart.totalPrice.toStringAsFixed(2)}',
                       style: Theme.of(context).primaryTextTheme.titleSmall,
                     ),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   const Spacer(),
                   TextButton(
