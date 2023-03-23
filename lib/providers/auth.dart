@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:web_shop/models/http_exception.dart';
+
+import '../models/http_exception.dart';
+
+import 'api_key.dart' as api;
 
 class Auth with ChangeNotifier {
   late String? _token;
   DateTime? _expiryDate;
   late String? _userId;
   Timer? _authTimer;
+  final String key = api.apiKey;
 
   bool get isAuth {
     return token != null;
@@ -34,7 +38,7 @@ class Auth with ChangeNotifier {
     try {
       final response = await http.post(
           Uri.parse(
-            'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyCsLcgWaaxjwsJu8R7wOtTSbqU6JQ-E7DU',
+            'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=$key',
           ),
           body: json.encode({
             'email': email,
@@ -106,7 +110,6 @@ class Auth with ChangeNotifier {
     }
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
-    // prefs.remove('userData');
     prefs.clear();
   }
 

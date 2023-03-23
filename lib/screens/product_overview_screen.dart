@@ -53,8 +53,6 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final _products = Provider.of<ProductsProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Image.network(
@@ -66,11 +64,11 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
                 return [
                   const PopupMenuItem(
                     value: filterOptions.Favorites,
-                    child: Text('Only favorites'),
+                    child: Text('Tylko ulubione'),
                   ),
                   const PopupMenuItem(
                     value: filterOptions.All,
-                    child: Text('Show all'),
+                    child: Text('Pokaż wszystko'),
                   )
                 ];
               },
@@ -98,7 +96,9 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           ),
         ],
       ),
-      drawer: const DrawerApp(),
+      drawer: SafeArea(
+        child: DrawerApp(),
+      ),
       body: _isLoading
           ? Center(
               child: LoadingAnimationWidget.inkDrop(

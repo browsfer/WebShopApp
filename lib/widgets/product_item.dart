@@ -44,13 +44,13 @@ class ProductItem extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               duration: const Duration(seconds: 3),
-                              content: const Text('Item added to a cart!'),
+                              content: const Text('Produkt dodany do koszyka!'),
                               // backgroundColor: Colors.black,
                               action: SnackBarAction(
                                 onPressed: () {
                                   cart.removeSingleItem(productData.id);
                                 },
-                                label: 'UNDO',
+                                label: 'COFNIJ',
                               ),
                             ),
                           );

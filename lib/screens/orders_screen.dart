@@ -37,7 +37,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
     final orderData = Provider.of<Orders>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your orders'),
+        title: const Text('Twoje zamówienia'),
       ),
       drawer: const DrawerApp(),
       body: (orderData.orderedProducts.isEmpty)
@@ -45,7 +45,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               onRefresh: () => _refreshProducts(context),
               child: const Center(
                 child: Text(
-                  'No orders placed yet.',
+                  'Nie masz jeszcze żadnych zamówień.',
                   style: TextStyle(fontSize: 20),
                 ),
               ),

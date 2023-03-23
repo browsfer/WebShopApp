@@ -13,12 +13,13 @@ class DrawerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Drawer(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           DrawerHeader(
-            padding: const EdgeInsets.all(25),
+            padding: EdgeInsets.zero,
             decoration: BoxDecoration(color: Theme.of(context).primaryColor),
             child: Image.network(
                 'https://assets.allegrostatic.com/seller-extras-c1/shop-cover_102853286_5ac3aa0b-101d-4c30-b3dd-f0cc271799f4'),
@@ -26,7 +27,7 @@ class DrawerApp extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.shop),
             title: const Text(
-              'Shop',
+              'Sklep',
               style: TextStyle(fontSize: 16),
             ),
             onTap: () {
@@ -38,7 +39,7 @@ class DrawerApp extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.payment),
             title: const Text(
-              'My orders',
+              'Moje zamówienia',
               style: TextStyle(fontSize: 16),
             ),
             onTap: () {
@@ -50,7 +51,7 @@ class DrawerApp extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.edit),
             title: const Text(
-              'My products',
+              'Moje produkty',
               style: TextStyle(fontSize: 16),
             ),
             onTap: () {
@@ -59,17 +60,18 @@ class DrawerApp extends StatelessWidget {
             },
           ),
           const Divider(),
-          const Spacer(),
+          Spacer(),
           ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
-                Theme.of(context).colorScheme.secondary,
-              )),
+                backgroundColor: MaterialStatePropertyAll(
+                  Theme.of(context).colorScheme.secondary,
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 Provider.of<Auth>(context, listen: false).logout();
               },
-              child: const Text('LOGOUT')),
+              child: const Text('WYLOGUJ')),
         ],
       ),
     );

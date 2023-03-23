@@ -19,7 +19,7 @@ class SplashScreen extends StatelessWidget {
               height: 20,
             ),
             const Text(
-              'Logging in...',
+              'Logowanie...',
               style: TextStyle(fontSize: 23),
             ),
           ],

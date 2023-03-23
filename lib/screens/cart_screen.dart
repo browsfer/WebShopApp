@@ -21,7 +21,7 @@ class _CartScreenState extends State<CartScreen> {
     final cart = Provider.of<Cart>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My cart'),
+        title: const Text('Mój koszyk'),
       ),
       body: Column(
         children: [
@@ -34,7 +34,7 @@ class _CartScreenState extends State<CartScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Total:',
+                    'W sumie:',
                     style: TextStyle(
                       fontSize: 20,
                     ),
@@ -45,13 +45,19 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                   Chip(
                     label: Text(
-                      '\$${cart.totalPrice.toStringAsFixed(2)}',
+                      '${cart.totalPrice.toStringAsFixed(2)}zł',
                       style: Theme.of(context).primaryTextTheme.titleSmall,
                     ),
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   const Spacer(),
                   TextButton(
+                    style: ButtonStyle(
+                      shadowColor: MaterialStatePropertyAll(
+                          Theme.of(context).colorScheme.secondary),
+                      foregroundColor: MaterialStatePropertyAll(
+                          Theme.of(context).primaryColor),
+                    ),
                     onPressed: (cart.totalPrice <= 0 || isLoading)
                         ? null
                         : () async {
@@ -69,27 +75,24 @@ class _CartScreenState extends State<CartScreen> {
                               isLoading = false;
                             });
                             cart.clearCart();
-
                             ScaffoldMessenger.of(context).hideCurrentSnackBar();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 duration: const Duration(seconds: 6),
-                                content:
-                                    const Text('You have placed an order.'),
-                                // backgroundColor: Colors.black,
+                                content: const Text('Złożyłeś zamówienie.'),
                                 action: SnackBarAction(
                                   onPressed: () {
                                     Navigator.of(context)
                                         .pushNamed(OrdersScreen.routeName);
                                   },
-                                  label: 'Show me my order',
+                                  label: 'Pokaż',
                                 ),
                               ),
                             );
                           },
                     child: isLoading
                         ? const CircularProgressIndicator()
-                        : const Text('PLACE ORDER'),
+                        : const Text('ZŁÓŻ ZAMÓWIENIE'),
                   ),
                 ],
               ),

@@ -22,8 +22,8 @@ class AuthScreen extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
-                  const Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
+                  const Color.fromARGB(255, 8, 15, 51).withOpacity(0.8),
+                  const Color.fromARGB(255, 241, 99, 101).withOpacity(0.8),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -58,10 +58,10 @@ class AuthScreen extends StatelessWidget {
                         ],
                       ),
                       child: const Text(
-                        'MyWebShop',
+                        'budmax mobile',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 41,
+                          fontSize: 35,
                           fontFamily: 'Anton',
                           fontWeight: FontWeight.normal,
                         ),
@@ -243,7 +243,7 @@ class _AuthCardState extends State<AuthCard>
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value!.isEmpty || !value.contains('@')) {
-                      return 'Invalid email!';
+                      return 'Niepoprawny adres e-mail!';
                     }
                     return null;
                   },
@@ -252,12 +252,12 @@ class _AuthCardState extends State<AuthCard>
                   },
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Password'),
+                  decoration: const InputDecoration(labelText: 'Hasło'),
                   obscureText: true,
                   controller: _passwordController,
                   validator: (value) {
                     if (value!.isEmpty || value.length < 5) {
-                      return 'Password is too short!';
+                      return 'Zbyt krótkie hasło!';
                     }
                   },
                   onSaved: (value) {
@@ -277,13 +277,13 @@ class _AuthCardState extends State<AuthCard>
                       position: _slideAnimation!,
                       child: TextFormField(
                         enabled: _authMode == AuthMode.Signup,
-                        decoration: const InputDecoration(
-                            labelText: 'Confirm Password'),
+                        decoration:
+                            const InputDecoration(labelText: 'Potwierdź hasło'),
                         obscureText: true,
                         validator: _authMode == AuthMode.Signup
                             ? (value) {
                                 if (value != _passwordController.text) {
-                                  return 'Passwords do not match!';
+                                  return 'Hasła nie są jednakowe!';
                                 }
                               }
                             : null,

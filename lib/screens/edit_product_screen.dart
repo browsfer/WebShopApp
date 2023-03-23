@@ -139,7 +139,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Edit Product'),
+        title: const Text('Edytuj produkt'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
@@ -160,7 +160,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     TextFormField(
                       initialValue: _initValues['title'],
                       decoration: const InputDecoration(
-                        labelText: 'Title',
+                        labelText: 'Tytuł',
                       ),
                       textInputAction: TextInputAction.next,
                       onFieldSubmitted: (_) {
@@ -168,7 +168,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please provide a value.';
+                          return 'Proszę wpisać wartosć.';
                         }
                         return null;
                       },
@@ -184,7 +184,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     ),
                     TextFormField(
                       initialValue: _initValues['price'],
-                      decoration: const InputDecoration(labelText: 'Price'),
+                      decoration: const InputDecoration(labelText: 'Cena'),
                       textInputAction: TextInputAction.next,
                       keyboardType: TextInputType.number,
                       focusNode: _priceFocusNode,
@@ -194,13 +194,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       },
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please enter a price.';
+                          return 'Proszę wpisać cenę.';
                         }
                         if (double.tryParse(value) == null) {
-                          return 'Please enter a valid number.';
+                          return 'Proszę wpisać poprawną cyfre.';
                         }
                         if (double.parse(value) <= 0) {
-                          return 'Please enter a number greater than zero.';
+                          return 'Proszę wpisać wartość większą niż" zero.';
                         }
                         return null;
                       },
@@ -216,17 +216,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     ),
                     TextFormField(
                       initialValue: _initValues['description'],
-                      decoration:
-                          const InputDecoration(labelText: 'Description'),
+                      decoration: const InputDecoration(labelText: 'Opis'),
                       maxLines: 3,
                       keyboardType: TextInputType.multiline,
                       focusNode: _descriptionFocusNode,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Please enter a description.';
+                          return 'Proszę wpisać opis.';
                         }
                         if (value.length < 10) {
-                          return 'Should be at least 10 characters long.';
+                          return 'Opic powinien zawierać przynajmniej 10 znaków.';
                         }
                         return null;
                       },
@@ -257,7 +256,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             ),
                           ),
                           child: _imageUrlController.text.isEmpty
-                              ? const Text('Enter a URL')
+                              ? const Text('Wpisz URL')
                               : FittedBox(
                                   child: Image.network(
                                     _imageUrlController.text,
@@ -267,8 +266,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         ),
                         Expanded(
                           child: TextFormField(
-                            decoration:
-                                const InputDecoration(labelText: 'Image URL'),
+                            decoration: const InputDecoration(
+                                labelText: 'Adres URL zdjęcia'),
                             keyboardType: TextInputType.url,
                             textInputAction: TextInputAction.done,
                             controller: _imageUrlController,
@@ -278,16 +277,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             },
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please enter an image URL.';
+                                return 'Proszę wpisać adres URL.';
                               }
                               if (!value.startsWith('http') &&
                                   !value.startsWith('https')) {
-                                return 'Please enter a valid URL.';
+                                return 'Proszę wprowadzić poprawny adres URL.';
                               }
                               if (!value.endsWith('.png') &&
                                   !value.endsWith('.jpg') &&
                                   !value.endsWith('.jpeg')) {
-                                return 'Please enter a valid image URL.';
+                                return 'Prosze wpisać poprawny adres URL obrazka.';
                               }
                               return null;
                             },
