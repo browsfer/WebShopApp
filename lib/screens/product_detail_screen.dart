@@ -13,17 +13,9 @@ class ProductDetailScreen extends StatelessWidget {
         Provider.of<ProductsProvider>(context, listen: false).findById(routeId);
 
     return Scaffold(
-      // appBar: AppBar(
-      // title: Text(loadedProduct!.title),
-      // ),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            // leading: Container(
-            //   margin: EdgeInsets.only(top: 15, left: 15),
-            //   child: Image.network(
-            //       'https://assets.allegrostatic.com/seller-extras-7b/logotype_102853286_aa23b4fa-8b34-4c53-96fb-810cf436093c'),
-            // ),
             iconTheme: const IconThemeData(color: Colors.black, size: 40),
             expandedHeight: 300,
             pinned: true,

@@ -40,14 +40,6 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
     }
     _isInit = false;
 
-    // if (_isInit) {
-    //   Future.delayed(Duration.zero).then(
-    //     (value) => Provider.of<ProductsProvider>(context, listen: false)
-    //         .fetchAndAddproducts(),
-    //   );
-    //   _isInit = false;
-    // }
-
     super.initState();
   }
 
@@ -96,7 +88,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           ),
         ],
       ),
-      drawer: SafeArea(
+      drawer: const SafeArea(
         child: DrawerApp(),
       ),
       body: _isLoading
